@@ -51,18 +51,18 @@ public:
 /* Class Declaration End */
 
 /* Build BST Functions Start*/
-treeNameNode* build_bst(int treeNameCount, int itemCount, int queryCount) {
+treeNameNode* add_tree_nodes(int treeNameCount) {
 
     // in.txt accessor
     std::ifstream in;
     in.open("in.txt");
-    
+
+    treeNameNode* head = nullptr;
+
     // Checks to see if in.txt open succesfully
     if (in.is_open() == true) {
-
         // for loop to iterate through contents of in.txt based on item quantities
-        for(int i = 1; i <= (treeNameCount + itemCount + queryCount + 1); i++) {
-
+        for(int i = 0; i <= treeNameCount; i++) {
             // Copys in.txt line contents and breaks into substrings
             std::string txt;
             std::getline(in, txt);
@@ -71,39 +71,32 @@ treeNameNode* build_bst(int treeNameCount, int itemCount, int queryCount) {
             std::strcpy(buffer, txt.c_str());
 
             char substring_one[20];
-            char substring_two[20];
-            char substring_three[20];
+            std::sscanf(buffer, "%s", substring_one);
 
-            std::sscanf(buffer, "%s %s %s", substring_one, substring_two, substring_three);
+            treeNameNode* new_node = new treeNameNode(substring_one);
 
-            // Code to run for n number of trees
-            if (i != 1 && i <= treeNameCount + 1) {
-                // std::cout << "NODE -> "<< substring_one << std::endl;
-            }
+            // Conditional to skip first line of text file
+            if (i != 0) {
+                // Conditional to see if pointer is empty
+                if (head == nullptr) {
+                    head = new_node;
+                } else {
+                    head->left = new_node;
+                    head = head->left;
+                }
 
-            // Code to run for n number of items
-            if (i > treeNameCount + 1 && i <= treeNameCount + itemCount + 1) {
-                // std::cout << "OBJ -> "<< substring_one << std::endl;
-            }
-
-            // Code to run for n number of queries
-            if (i > treeNameCount + itemCount + 1 && i <= treeNameCount + itemCount + queryCount + 1) {
-                // std::cout << "QUERY -> "<< substring_one << std::endl;
+                std::cout << head->treeName << std::endl;
             }
         }
     } else {
-        std::cerr << "Error: Failed To Open in.txt file." << std::endl;
+        // Output errer message should the file fail to open
+        std::cerr << "Error: Failed to open in.txt" << std::endl;
     }
 
-    treeNameNode* test = new treeNameNode("name");
-
-    return test;
+    in.close();
+    return head;
 }
 /* Build BST Functions Start*/
-
-/* BST Addition -> treeNameNode Start */
-
-/* BST Addition -> treeNameNode Start */
 
 int main() {
     /* Determin Item Quantities Start */
@@ -116,8 +109,7 @@ int main() {
     fscanf(collect, "%d %d %d", &treeNameCount, &itemCount, &queryCount);
     /* Determin Item Quantities End */
 
-    treeNameNode* root = build_bst(treeNameCount, itemCount, queryCount);
+    treeNameNode* test = add_tree_nodes(treeNameCount);
 
-    std::cout << root->treeName;
-    return 69;
+    return 0;
 }
