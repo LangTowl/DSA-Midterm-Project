@@ -20,7 +20,7 @@ public:
     }
 
     itemNode(const char itemName[], const int population) {
-        strcpy(name, itemName);
+        std::strcpy(name, itemName);
         count = population;
         left = NULL;
         right = NULL;
@@ -42,7 +42,7 @@ public:
     }
 
     treeNameNode(const char name[]) {
-        strcpy(treeName, name);
+        std::strcpy(treeName, name);
         theTree = NULL;
         left = NULL;
         right = NULL;
@@ -52,7 +52,6 @@ public:
 
 /* Build BST Functions Start*/
 treeNameNode* add_tree_nodes(int treeNameCount) {
-
     // in.txt accessor
     std::ifstream in;
     in.open("in.txt");
@@ -63,7 +62,7 @@ treeNameNode* add_tree_nodes(int treeNameCount) {
     if (in.is_open() == true) {
         // for loop to iterate through contents of in.txt based on item quantities
         for(int i = 0; i <= treeNameCount; i++) {
-            // Copys in.txt line contents and breaks into substrings
+            /* String collection start */
             std::string txt;
             std::getline(in, txt);
 
@@ -72,20 +71,22 @@ treeNameNode* add_tree_nodes(int treeNameCount) {
 
             char substring_one[20];
             std::sscanf(buffer, "%s", substring_one);
+            /* String collection start */
 
             treeNameNode* new_node = new treeNameNode(substring_one);
 
             // Conditional to skip first line of text file
             if (i != 0) {
-                // Conditional to see if pointer is empty
                 if (head == nullptr) {
                     head = new_node;
                 } else {
-                    head->left = new_node;
-                    head = head->left;
+                    
+                    treeNameNode* current = head;
+                    while (current->left != nullptr) {
+                        current = current->left;
+                    }
+                    current->left = new_node;
                 }
-
-                std::cout << head->treeName << std::endl;
             }
         }
     } else {
@@ -95,6 +96,41 @@ treeNameNode* add_tree_nodes(int treeNameCount) {
 
     in.close();
     return head;
+}
+
+void add_items_to_tree(int treeNameCount, int itemCount, treeNameNode* tree) {
+    // in.txt accessor
+    std::ifstream in;
+    in.open("in.txt");
+
+    // Checks to see if in.txt open succesfully
+    if (in.is_open() == true) {
+        // for loop to iterate through contents of in.txt based on item quantities
+        for(int i = 0; i <= treeNameCount + itemCount + 1; i++) {
+            /* String collection start */
+            std::string txt;
+            std::getline(in, txt);
+
+            char buffer[60];
+            std::strcpy(buffer, txt.c_str());
+
+            char substring_one[20];
+            char substring_two[20];
+            char substring_three[20];
+            std::sscanf(buffer, "%s %s %s", substring_one, substring_two, substring_three);
+            /* String collection start */
+
+            if (i != 0 && i > treeNameCount + 1 && i < treeNameCount + itemCount + 1) {
+                // process_item_addition(tree, substring_one, substring_two, std::stoi(substring_three));
+            }
+        }
+    }
+
+    in.close();
+}
+
+void process_item_addition(treeNameNode* tree, std::string type, std::string item, int data) {
+
 }
 /* Build BST Functions Start*/
 
@@ -109,7 +145,12 @@ int main() {
     fscanf(collect, "%d %d %d", &treeNameCount, &itemCount, &queryCount);
     /* Determin Item Quantities End */
 
-    treeNameNode* test = add_tree_nodes(treeNameCount);
+    treeNameNode* head = add_tree_nodes(treeNameCount);
+    add_items_to_tree(treeNameCount, itemCount, head);
 
+    while (head != nullptr) {
+        std::cout << head->treeName << std::endl;
+        head = head->left;
+    }
     return 0;
 }
