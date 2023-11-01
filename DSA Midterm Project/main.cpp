@@ -101,11 +101,13 @@ treeNameNode* add_roots_to_tree(ifstream& input) {
 /* BST builder functions end */
 
 /* Traversal functions start */
-void inorder_traversal(treeNameNode* root) {
+void inorder_root_traversal(treeNameNode* root) {
     if (root != nullptr) {
-        inorder_traversal(root->left);
+        inorder_root_traversal(root->left);
+
         std::cout << root->treeName << endl;
-        inorder_traversal(root->right);
+        
+        inorder_root_traversal(root->right);
     }
 }
 /* Traversal functions end */
@@ -121,7 +123,7 @@ int main() {
     if (input.is_open() == true) {
         treeNameNode* root = add_roots_to_tree(input);
 
-        inorder_traversal(root);
+        inorder_root_traversal(root);
     } 
     /* Code to run upon successful file access end */
     else 
