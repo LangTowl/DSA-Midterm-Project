@@ -80,12 +80,25 @@ treeNameNode* add_tree_nodes(int treeNameCount) {
                 if (head == nullptr) {
                     head = new_node;
                 } else {
-                    
-                    treeNameNode* current = head;
-                    while (current->left != nullptr) {
-                        current = current->left;
+                    if (head->left == nullptr && head->right == nullptr) {
+                        treeNameNode* current = head;
+                            while (current->left != nullptr) {
+                                current = current->left;
+                            }
+                        current->left = new_node;
+                    } else if (head->left != nullptr && head->right == nullptr) {
+                        treeNameNode* current = head;
+                            while (current->right != nullptr) {
+                                current = current->left;
+                            }
+                        current->right = new_node;
+                    } else if (head->left != nullptr && head->right != nullptr) {
+                        treeNameNode* current = head;
+                            while (current->left != nullptr) {
+                                current = current->left;
+                            }
+                        current->left = new_node;
                     }
-                    current->left = new_node;
                 }
             }
         }
@@ -148,9 +161,18 @@ int main() {
     treeNameNode* head = add_tree_nodes(treeNameCount);
     add_items_to_tree(treeNameCount, itemCount, head);
 
-    while (head != nullptr) {
-        std::cout << head->treeName << std::endl;
-        head = head->left;
+    treeNameNode* left = head;
+    while (left != nullptr) {
+        std::cout << left->treeName << std::endl;
+        left = left->left;
+    }
+
+    std::cout << std::endl;
+
+    treeNameNode* right = head;
+    while (right != nullptr) {
+        std::cout << right->treeName << std::endl;
+        right = right->right;
     }
     return 0;
 }
