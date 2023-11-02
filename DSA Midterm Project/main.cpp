@@ -114,19 +114,22 @@ itemNode* insert_item_node(itemNode* node, char name[20], int data) {
 } 
 
 treeNameNode* locate_root_node(treeNameNode* node, const char name[]) {
-    if (node == nullptr) {
-        return nullptr;
+    while (node != nullptr) {
+
+        int comparison_result = strcmp(name, node->treeName);
+
+        cout << node->treeName << " a " << name << endl;
+
+        if (comparison_result == 0) {
+            break;
+        } else if (comparison_result < 0) {
+            node = node->left;
+        } else {
+            node = node->right;
+        }
     }
 
-    int comparison_result = strcmp(name, node->treeName);
-
-    if (comparison_result == 0) {
-        return node;
-    } else if (comparison_result < 0) {
-        return locate_root_node(node->left, name);
-    } else {
-        return locate_root_node(node->right, name);
-    }
+    return node;
 }
 
 void add_item_to_root(ifstream& input, treeNameNode* root) {
@@ -144,7 +147,6 @@ void add_item_to_root(ifstream& input, treeNameNode* root) {
         strcpy(name_char, name.c_str());
         getline(input, data, '\n');
 
-        cout << root->treeName << endl;
         treeNameNode* temp = locate_root_node(root, type_char);
         cout << temp->treeName << endl;
     }
@@ -191,15 +193,3 @@ int main() {
 
     return 0;
 }
-
-
-/*
-Time out corner
-if (root == nullptr) {
-            cout << "nullptr" << endl;
-        } else {
-            cout << root->treeName << endl;
-        }
-        
-        inorder_root_traversal(root);
-*/
