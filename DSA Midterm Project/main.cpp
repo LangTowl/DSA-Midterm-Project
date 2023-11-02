@@ -8,9 +8,7 @@ using namespace std;
 /* Library Inclusion End */
 
 /* Global Variables Start */
-int tree_root_count;
-int object_count;
-int query_count;
+int tree_root_count, object_count, query_count;
 /* Global Variables End */
 
 /* Class Declarations Start */
@@ -72,7 +70,7 @@ void inorder_root_traversal(treeNameNode* root) {
 }
 /* Traversal functions end */
 
-/* BST builder functions start */
+/* BST Root builder functions start */
 treeNameNode* insert_root_node(treeNameNode* node, char name[20]) {
 
     if(node == nullptr){
@@ -96,7 +94,7 @@ treeNameNode* add_roots_to_tree(ifstream& input) {
 
     treeNameNode* root = nullptr;
 
-    for (int i = 0; i <= tree_root_count; i++) {
+    for (int i = 0; i < tree_root_count; i++) {
         string name;
         char name_char[20];
 
@@ -108,17 +106,23 @@ treeNameNode* add_roots_to_tree(ifstream& input) {
 
     return root;
 }
+/* BST Root builder functions end */
 
+/* BST item builder functions start */
 itemNode* insert_item_node(itemNode* node, char name[20], int data) {
     return nullptr;
 } 
 
-treeNameNode* locate_root_node(treeNameNode* node, char name[]) {
-    if (node == nullptr || strcmp(node->treeName, name) == 0) {
-        return node;
+treeNameNode* locate_root_node(treeNameNode* node, const char name[]) {
+    if (node == nullptr) {
+        return nullptr;
     }
 
-    if (strcmp(name, node->treeName) < 0) {
+    int comparison_result = strcmp(name, node->treeName);
+
+    if (comparison_result == 0) {
+        return node;
+    } else if (comparison_result < 0) {
         return locate_root_node(node->left, name);
     } else {
         return locate_root_node(node->right, name);
@@ -126,51 +130,56 @@ treeNameNode* locate_root_node(treeNameNode* node, char name[]) {
 }
 
 void add_item_to_root(ifstream& input, treeNameNode* root) {
-    for (int i = tree_root_count; i < tree_root_count + object_count + 1; i++) {
-        if (i > tree_root_count && i < tree_root_count + object_count + 1) {
-            string type;
-            char type_char[20];
-            string name;
-            char name_char[20];
-            string data;
+    for (int i = 0; i < object_count; i++) {
+        
+        string type;
+        char type_char[20];
+        string name;
+        char name_char[20];
+        string data;
 
-            getline(input, type, ' ');
-            strcpy(type_char, type.c_str());
-            getline(input, name, ' ');
-            strcpy(name_char, name.c_str());
-            getline(input, data, '\n');
+        getline(input, type, ' ');
+        strcpy(type_char, type.c_str());
+        getline(input, name, ' ');
+        strcpy(name_char, name.c_str());
+        getline(input, data, '\n');
 
-            treeNameNode* temp = locate_root_node(root, type_char);
-
-            if (temp != nullptr) {
-                cout << temp->treeName << endl;
-            } else {
-                cout << "Root node [" << type << "] not found" << endl;
-            }
-        }
+        cout << root->treeName << endl;
+        treeNameNode* temp = locate_root_node(root, type_char);
+        cout << temp->treeName << endl;
     }
 }
 
-/* BST builder functions end */
+/* BST item builder functions end */
 
 int main() {
     /* in.txt accessor start */
     ifstream input;
     input.open("in.txt");
-    input >> tree_root_count >> object_count >> query_count;
+    string temp_tree_root_count, temp_object_count, temp_query_count;
+
+    getline(input, temp_tree_root_count, ' ');
+    getline(input, temp_object_count, ' ');
+    getline(input, temp_query_count, '\n');
+
+    tree_root_count = stoi(temp_tree_root_count);
+    object_count = stoi(temp_object_count);
+    query_count = stoi(temp_query_count);
     /* in.txt accessor end */
 
     /* Code to run upon successful file access start */
     if (input.is_open() == true) {
         treeNameNode* root = add_roots_to_tree(input);
+        treeNameNode* root_copy = root;
 
-        inorder_root_traversal(root);
+        cout << "Root node -> "<< root->treeName << endl;
+        cout << endl;
 
-        if (root == nullptr) {
-            cout << "nullptr" << endl;
-        } else {
-            cout << root->treeName << endl;
-        }
+        cout << "Inorder root traversal:" << endl;
+        inorder_root_traversal(root_copy);
+        cout << endl;
+
+        add_item_to_root(input, root);    
     } 
     /* Code to run upon successful file access end */
     else 
@@ -182,3 +191,15 @@ int main() {
 
     return 0;
 }
+
+
+/*
+Time out corner
+if (root == nullptr) {
+            cout << "nullptr" << endl;
+        } else {
+            cout << root->treeName << endl;
+        }
+        
+        inorder_root_traversal(root);
+*/
