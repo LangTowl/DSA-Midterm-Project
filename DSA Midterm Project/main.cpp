@@ -265,6 +265,16 @@ int height_balance(itemNode* sub_tree) {
     }
 }
 
+int sub_tree_count(itemNode* sub_tree) {
+    // Recursive function to compute the amount of items nested within a target subtree
+
+    if (sub_tree == nullptr) {
+        return 0;
+    } else {
+        return sub_tree->count + sub_tree_count(sub_tree->left) + sub_tree_count(sub_tree->right);
+    }
+}
+
 void execute_queries(treeNameNode* root_tree, ifstream &input) {
     // Function to process and execute queries
 
@@ -339,7 +349,8 @@ void execute_queries(treeNameNode* root_tree, ifstream &input) {
 
             treeNameNode* temp_root = locate_root_node(root_tree, type);
 
-            cout << type << endl;
+            int total = sub_tree_count(temp_root->theTree);
+            cout << type << " count " << total << endl;
         }
         // Count function call end
 
@@ -390,7 +401,7 @@ int main() {
     /* Code To Add Itens To Root Tree End */
 
     /* Code To Execute BST Queries Start */
-    cout << "Results Query Executions:" << endl;
+    cout << "Results Of Query Executions:" << endl;
 
     execute_queries(root_tree, input);
     /* Code To Execute BST Queries End */
