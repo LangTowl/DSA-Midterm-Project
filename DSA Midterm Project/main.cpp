@@ -20,6 +20,8 @@ using namespace std;
 int tree_root_count;
 int object_count;
 int query_count;
+
+ofstream output("out.txt");
 /* Global Variables End */
 
 /* Item Node Class Declaration Start */
@@ -101,12 +103,12 @@ void complete_tree_traversal(treeNameNode* root) {
 
     if (root != nullptr) {
         complete_tree_traversal(root->left);
-        cout << "***" << root->treeName << "***" << endl;
+        cout << "Inorder Traversal Of [ " << root->treeName << " ] Tree." << endl;
         inorder_item_traversal(root->theTree);
 
         cout << endl;
-        complete_tree_traversal(root->right);
 
+        complete_tree_traversal(root->right);
     }
 }
 /* Root Traversal Functions End */
@@ -208,6 +210,112 @@ void add_item_to_root_tree(ifstream &input, treeNameNode* root_tree) {
 }
 /* Item Node Functions End */ 
 
+/* Query Function Start */
+int fetch_data(itemNode* sub_tree, char target[20]) {
+    // Recursive function to fetch data stored in target item, returns -1 if search fails
+
+    if (sub_tree != nullptr) {
+        if (strcmp(sub_tree->name, target) == 0) {
+            return sub_tree->count;
+        }
+
+        if (strcmp(sub_tree->name, target) < 0) {
+            return fetch_data(sub_tree->right, target);
+        }
+
+        if (strcmp(sub_tree->name, target) > 0) {
+            return fetch_data(sub_tree->left, target);
+        }
+
+        return -1;
+    }
+
+    return -1;
+}
+
+int item_before(itemNode* sub_tree, char target[20]) {
+    // Recursive function to determine the amount of items above or before a target item
+
+    if (sub_tree == nullptr) {
+        return 0;
+    } else {
+        if (strcmp(sub_tree->name, target) < 0) {
+            return item_before(sub_tree->left, target) + item_before(sub_tree->right, target) + 1;
+        } else {
+            return item_before(sub_tree->left, target) + 0;
+        }
+    }
+}
+
+void execute_queries(treeNameNode* root_tree, ifstream &input) {
+    // Function to process and execute queries
+
+    for (int i = 0; i < query_count; i++) {
+        char query[20];
+        input >> query;
+
+        // Search function implementation start
+        if (strcmp(query, "search") == 0) {
+            char type[20];
+            char target[20];
+            input >> type >> target;
+
+            treeNameNode* temp_root = locate_root_node(root_tree, type);
+            int fetched_data = fetch_data(temp_root->theTree, target);
+
+            if (fetched_data != -1) {
+                cout << fetched_data << " " << target << " found in " << type << "." << endl;
+            } else {
+                cout << target << " could not be found in data set." << endl;
+            }
+        }
+        // Search function implementation end
+
+        else
+
+        // Irem before function call start
+        if (strcmp(query, "item_before") == 0) {
+            char type[20];
+            char target[20];
+            input >> type >> target;
+
+            treeNameNode* temp_root = locate_root_node(root_tree, type);
+            int items_before = item_before(temp_root->theTree, target);
+
+            if (temp_root != nullptr) {
+                cout << "Items before " << target << ": " << items_before << endl;
+            } else {
+                cerr << "Error: Failed To Locate Target Node When Calculating Item Befor." << endl;
+            }
+        }
+        // Irem before function call end
+
+        else
+
+        // Height Balance function call start
+        if (strcmp(query, "height_balance") == 0) {
+        
+        }
+        // Height Balance function call end
+
+        else
+
+        // Count function call start
+        if (strcmp(query, "count") == 0) {
+        
+        }
+        // Count function call end
+
+        else {
+            // cerr << "Error: Query not recognized" << endl;
+            break;
+        }
+
+        cout << endl;
+    }
+}
+/* Query Function End */
+
 int main() {
     /* Code To Access in.txt File Start */
     ifstream input;
@@ -239,8 +347,15 @@ int main() {
 
     /* Code To Add Itens To Root Tree Start */
     add_item_to_root_tree(input, root_tree);
-
     complete_tree_traversal(root_tree);
+
+    cout << endl;
     /* Code To Add Itens To Root Tree End */
+
+    /* Code To Execute BST Queries Start */
+    cout << "Results Query Executions:" << endl;
+
+    execute_queries(root_tree, input);
+    /* Code To Execute BST Queries End */
     return 0;
 }
