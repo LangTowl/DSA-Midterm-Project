@@ -12,6 +12,7 @@ Latest Update: 8:32 AM 11/9/2023
 #include <fstream>
 #include <string>
 #include <stdio.h>
+#include <cstdlib>
 
 using namespace std;
 /* Library Inclusion End */
@@ -247,6 +248,23 @@ int item_before(itemNode* sub_tree, char target[20]) {
     }
 }
 
+int height_balance(itemNode* sub_tree) {
+    // Recursive function to compute the subtree height of either the left or right subtree
+
+    if (sub_tree == nullptr) {
+        return 0;
+    } else {
+        int left_height = height_balance(sub_tree->left);  
+        int right_height = height_balance(sub_tree->right);
+
+        if (right_height > left_height) {
+            return right_height + 1;
+        } else {
+            return left_height + 1;
+        }
+    }
+}
+
 void execute_queries(treeNameNode* root_tree, ifstream &input) {
     // Function to process and execute queries
 
@@ -294,7 +312,17 @@ void execute_queries(treeNameNode* root_tree, ifstream &input) {
 
         // Height Balance function call start
         if (strcmp(query, "height_balance") == 0) {
-        
+            char type[20];
+            input >> type;
+
+            treeNameNode* temp_root = locate_root_node(root_tree, type);
+            
+            int left_tree_height = height_balance(temp_root->theTree->left);
+            int right_tree_height = height_balance(temp_root->theTree->right);
+            int difference = abs(right_tree_height - left_tree_height);
+            string result = (difference > 1) ? "not balanced." : "balanced";
+
+            cout << type << ": left height " << left_tree_height << ", right height " << right_tree_height << ", difference "<< difference << ", " << result << endl;
         }
         // Height Balance function call end
 
@@ -302,7 +330,12 @@ void execute_queries(treeNameNode* root_tree, ifstream &input) {
 
         // Count function call start
         if (strcmp(query, "count") == 0) {
-        
+            char type[20];
+            input >> type;
+
+            treeNameNode* temp_root = locate_root_node(root_tree, type);
+
+            cout << type << endl;
         }
         // Count function call end
 
@@ -357,5 +390,6 @@ int main() {
 
     execute_queries(root_tree, input);
     /* Code To Execute BST Queries End */
+
     return 0;
 }
