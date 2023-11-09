@@ -279,12 +279,16 @@ void execute_queries(treeNameNode* root_tree, ifstream &input) {
             input >> type >> target;
 
             treeNameNode* temp_root = locate_root_node(root_tree, type);
-            int fetched_data = fetch_data(temp_root->theTree, target);
 
-            if (fetched_data != -1) {
-                cout << fetched_data << " " << target << " found in " << type << "." << endl;
-            } else {
-                cout << target << " could not be found in data set." << endl;
+            if (temp_root != nullptr) {
+
+                int fetched_data = fetch_data(temp_root->theTree, target);
+
+                if (fetched_data != -1) {
+                    cout << fetched_data << " " << target << " found in " << type << "." << endl;
+                } else {
+                    cout << target << " could not be found in data set." << endl;
+                }
             }
         }
         // Search function implementation end
